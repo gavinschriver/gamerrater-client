@@ -16,7 +16,7 @@ export const GameProvider = (props) => {
         return res.json();
       })
       .then((res) => {
-        setGames(res.results);
+        setGames(res);
       });
   };
 
