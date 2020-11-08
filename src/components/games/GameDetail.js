@@ -1,11 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import { GameContext } from "./GameProvider";
-import RatingForm from "./RatingForm";
 import ReviewForm from "./ReviewForm";
 import ReviewList from "./ReviewList";
 
 export default (props) => {
-  const { getSingleGame, createRating } = useContext(GameContext);
+  const { getSingleGame, createRating, createImage } = useContext(GameContext);
   const [game, setGame] = useState({ categories: [] });
   const [rating, setRating] = useState(0);
 
@@ -14,6 +13,25 @@ export default (props) => {
     setRating(newRating);
   };
 
+  const getBase64 = (file, callback) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.addEventListener("load", () => callback(reader.result));
+  };
+
+  const handleImageSubmit = (event) => {
+    event.preventDefault();
+    getBase64(event.target.game_image.files[0], (imageBase64) => {
+      console.log("Base64 of file is", imageBase64);
+      const newImage = {
+        base64ImageString: imageBase64,
+        gameId: game.id
+      }
+      createImage(newImage, game.id)
+    });
+  };
+
+  // for adding a rating
   const handleSubmit = (e) => {
     const gameId = parseInt(props.match.params.gameId);
     const newRating = {
@@ -32,19 +50,33 @@ export default (props) => {
 
   return (
     <>
-      <h3>ALL ABOUT THIS GAME</h3>
-      <div>Title: {game.title}</div>
-      <div>Time to Play: {game.time_to_play}</div>
-      <div>Year Released: {game.year_realeased}</div>
-      <div>Designer: {game.designer}</div>
-      <div>Number of players: {game.number_of_players}</div>
-      <div>Age recommendation: {game.age_recommendation}</div>
-      <div>
+      <section>
+        <h3>ALL ABOUT THIS GAME</h3>
+        <div>Title: {game.title}</div>
+        <div>Time to Play: {game.time_to_play}</div>
+        <div>Year Released: {game.year_realeased}</div>
+        <div>Designer: {game.designer}</div>
+        <div>Number of players: {game.number_of_players}</div>
+        <div>Age recommendation: {game.age_recommendation}</div>
         <h3> Categories:</h3>
         {game.categories.map((c) => {
           return <div>{c.label}</div>;
         })}
-        { !game.rated &&
+      </section>
+        <form onSubmit={handleImageSubmit}>
+          <input type="file" id="game_image" />
+          {/* <input type="hidden" name="game_id" value={game.id} /> */}
+          <button
+            type="submit"
+            // onClick={(evt) => {
+            //   createGameImageJSON(evt);
+            // }}
+          >
+            Upload
+          </button>
+      </form>
+      
+        {/* {!game.rated && (
           <div>
             <input
               type="range"
@@ -55,11 +87,10 @@ export default (props) => {
             />
             <button onClick={handleSubmit}>Add a rating</button>
           </div>
-        }
+        )} */}
         <div>Average rating for this game: {game.average_rating}</div>
         <ReviewForm gameId={game.id} />
         <ReviewList gameId={game.id} />
-      </div>
     </>
   );
 };

@@ -86,6 +86,17 @@ export const GameProvider = (props) => {
     })
   }
 
+  const createImage = (newImage, gameId) => {
+    return fetch(`http://localhost:8000/images`, {
+      method: "POST",
+      headers: {
+        Authorization: `Token ${localStorage.getItem("gr_token")}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(newImage)
+    })
+  }
+
   return (
     <GameContext.Provider
       value={{
@@ -97,6 +108,7 @@ export const GameProvider = (props) => {
         createReview,
         createRating,
         reviews,
+        createImage
       }}
     >
       {props.children}
