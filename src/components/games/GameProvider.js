@@ -72,8 +72,19 @@ export const GameProvider = (props) => {
       .then((rev) => {
         getReviewsByGameId(gameId);
         return rev;
-      });
+      });    
   };
+
+  const createRating = (rating) => {
+    return fetch(`http://localhost:8000/ratings`, {
+      method: "POST",
+      headers: {
+        Authorization: `Token ${localStorage.getItem("gr_token")}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(rating)
+    })
+  }
 
   return (
     <GameContext.Provider
@@ -84,6 +95,7 @@ export const GameProvider = (props) => {
         createGame,
         getReviewsByGameId,
         createReview,
+        createRating,
         reviews,
       }}
     >
