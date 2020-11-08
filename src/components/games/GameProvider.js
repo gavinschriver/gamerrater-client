@@ -59,9 +59,33 @@ export const GameProvider = (props) => {
       .then(setReviews);
   };
 
+  const createReview = (newReview, gameId) => {
+    return fetch(`http://localhost:8000/reviews`, {
+      method: "POST",
+      headers: {
+        Authorization: `Token ${localStorage.getItem("gr_token")}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newReview),
+    })
+      .then((res) => res.json())
+      .then((rev) => {
+        getReviewsByGameId(gameId);
+        return rev;
+      });
+  };
+
   return (
     <GameContext.Provider
-      value={{ games, getGames, getSingleGame, createGame, getReviewsByGameId, reviews }}
+      value={{
+        games,
+        getGames,
+        getSingleGame,
+        createGame,
+        getReviewsByGameId,
+        createReview,
+        reviews,
+      }}
     >
       {props.children}
     </GameContext.Provider>
