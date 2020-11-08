@@ -14,7 +14,7 @@ export default props => {
     return (
         <section className="reviews">
             {reviews.map(r => {
-                return <div>{r.text}</div>
+                return <div>{r.text} @ {new Date(r.timestamp).toLocaleDateString("en-US")}</div>
             })}
         </section>
     )

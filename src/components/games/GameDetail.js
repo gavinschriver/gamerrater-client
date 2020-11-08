@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { GameContext } from "./GameProvider";
+import ReviewForm from "./ReviewForm";
 import ReviewList from "./ReviewList";
 
 export default (props) => {
@@ -26,6 +27,7 @@ export default (props) => {
         {game.categories.map((c) => {
           return <div>{c.label}</div>;
         })}
+        <ReviewForm gameId={game.id} />
         <ReviewList gameId={game.id} />
       </div>
     </>
